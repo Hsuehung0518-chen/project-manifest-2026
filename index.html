@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Didot Editorial UI Optimizer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&family=Playfair+Display:ital,wght@0,400;0,900;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            /* 預設顏色變數 - 淺色模式 */
+            --bg-color: #fdfdfd;
+            --main-title-gradient: linear-gradient(to bottom right, #a855f7, #ec4899);
+            --body-text-color: rgba(0, 0, 0, 0.4);
+            --card-bg: #ffffff;
+            --ui-panel-bg: rgba(255, 255, 255, 0.8);
+            --font-scale: 1; /* 字體縮放倍率 */
+        }
+
+        /* 暗黑模式變數 */
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --main-title-gradient: linear-gradient(to bottom right, #c084fc, #f472b6);
+            --body-text-color: rgba(255, 255, 255, 0.5);
+            --card-bg: #262626;
+            --ui-panel-bg: rgba(38, 38, 38, 0.9);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .editorial-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: var(--card-bg);
+            border-radius: 40px;
+            padding: 60px 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 主標題優化：增加間距與漸層清晰度 */
+        .main-title {
+            font-family: 'Noto Serif TC', serif;
+            font-size: calc(3.5rem * var(--font-scale));
+            line-height: 1.2;
+            background: var(--main-title-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        /* 內文優化：解決擠在一起的問題 */
+        .body-content {
+            color: var(--body-text-color);
+            font-size: calc(1.125rem * var(--font-scale));
+            line-height: 1.8; /* 增加行高解決擁擠感 */
+            margin-bottom: 3rem;
+            letter-spacing: 0.01em;
+            text-align: justify;
+        }
+
+        /* 調整控制面板 */
+        .control-panel {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--ui-panel-bg);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            z-index: 100;
+            border: 1px solid rgba(128, 128, 128, 0.2);
+        }
+
+        .slider-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: gray;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input[type="range"] {
+            width: 150px;
+            accent-color: #a855f7;
+        }
+
+        /* 模式切換按鈕 */
+        .theme-toggle {
+            width: 50px;
+            height: 24px;
+            background: #e2e8f0;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .theme-toggle::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+        }
+
+        [data-theme="dark"] .theme-toggle { background: #6b21a8; }
+        [data-theme="dark"] .theme-toggle::after { transform: translateX(26px); }
+
+    </style>
+</head>
+<body>
+
+    <div class="editorial-container">
+        <div class="text-[10px] uppercase tracking-[0.5em] text-gray-400 mb-8">Medical Health Master Archive</div>
+        
+        <h1 class="main-title">
+            「君子求諸己，小人求諸人。」
+        </h1>
+
+        <div class="body-content">
+            Act as a Luxury Brand Designer: Create a high-fashion editorial UI. 
+            Focus on negative space and bespoke typography in Didot style. 
+            The balance between thin and thick strokes defines elegance.
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-gray-100 dark:border-gray-800">
+            <div class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Grid: 8px</div>
+            <div class="flex gap-2">
+                <div class="w-2 h-2 rounded-full bg-red-400"></div>
+                <div class="w-2 h-2 rounded-full bg-yellow-400"></div>
+                <div class="w-2 h-2 rounded-full bg-green-400"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-panel">
+        <div>
+            <span class="slider-label">Font Scale</span>
+            <input type="range" id="fontSlider" min="0.8" max="1.5" step="0.1" value="1">
+        </div>
+
+        <div class="flex flex-col items-center">
+            <span class="slider-label">Appearance</span>
+            <div class="theme-toggle" id="themeToggle"></div>
+        </div>
+    </div>
+
+    <script>
+        // 控制字體放大縮小
+        const fontSlider = document.getElementById('fontSlider');
+        const root = document.documentElement;
+
+        fontSlider.addEventListener('input', (e) => {
+            root.style.setProperty('--font-scale', e.target.value);
+        });
+
+        // 控制顏色深淺模式
+        const themeToggle = document.getElementById('themeToggle');
+        let isDark = false;
+
+        themeToggle.addEventListener('click', () => {
+            isDark = !isDark;
+            if (isDark) {
+                document.body.setAttribute('data-theme', 'dark');
+            } else {
+                document.body.removeAttribute('data-theme');
+            }
+        });
+    </script>
+</body>
+</html>
